@@ -14,11 +14,12 @@ alarm_time = None
 # UI with tkinter
 ## show time
 def show_time():
-    global current_time_comp
-    global current_time
+    global alarm_time
     current_time = datetime.now().strftime("%H:%M:%S")
     current_time_comp = datetime.now().strftime("%H:%M")
     time_lable.config(text = f"{current_time}")
+    if alarm_time is not None and current_time_comp >= alarm_time :
+        print("Alarm")
     window.after(1000, show_time)
 window.after(1000,show_time)
 
