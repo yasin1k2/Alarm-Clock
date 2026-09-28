@@ -27,6 +27,8 @@ def show_time():
     if alarm_time is not None and current_time_comp >= alarm_time and alarm_stopped == False :
         print("Alarm")
         alarm_ringing = True
+    if alarm_ringing == True:
+        start_alarm_sound()
 
     window.after(1000, show_time)
 window.after(1000,show_time)
@@ -56,6 +58,7 @@ def stop_alarm():
     global alarm_stopped
 
     if alarm_ringing == True:
+        stop_alarm_sound()
         alarm_stopped = True
         alarm_ringing =False
 
@@ -70,7 +73,21 @@ stop_alarm_button.grid(row = 6 , column = 5)
 
 
 # make a alarm sound
+def start_alarm_sound():
+    global alarm_ringing
+    pygame.mixer.init()
+    pygame.mixer.music.load("alarm1.wav")
+    pygame.mixer.music.play()
+
+
+def stop_alarm_sound():
+    pygame.mixer.music.stop()
 
 
 # main
-window.mainloop()
+def main():
+    window.mainloop()
+
+
+if __name__ == "__main__":
+    main()
