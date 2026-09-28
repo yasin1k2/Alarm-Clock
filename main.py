@@ -1,6 +1,7 @@
 # imports and global valuables
 import tkinter as tk
 from datetime import datetime
+import pygame
 window = tk.Tk()
 title = window.title("Alarm Clock")
 window.resizable(width=False,height=False)
@@ -10,16 +11,25 @@ current_time_comp = datetime.now().strftime("%H:%M")
 time_lable = tk.Label(window, text=f"{current_time}", font=("Malgun Gothic", 30))
 time_lable.grid(row=0, column=5)
 alarm_time = None
+alarm_ringing = False
+alarm_stopped = False
+
 
 # UI with tkinter
-## show time
+## show time and compare
 def show_time():
     global alarm_time
+    global alarm_ringing
+
     current_time = datetime.now().strftime("%H:%M:%S")
     current_time_comp = datetime.now().strftime("%H:%M")
     time_lable.config(text = f"{current_time}")
-    if alarm_time is not None and current_time_comp >= alarm_time :
+    if alarm_time is not None and current_time_comp >= alarm_time and alarm_stopped == False :
         print("Alarm")
+        alarm_ringing = True
+    if alarm_ringing == True:
+        start_alarm_sound()
+
     window.after(1000, show_time)
 window.after(1000,show_time)
 
@@ -34,13 +44,31 @@ minute_entry.grid(row= 4 , column = 5)
 
 ## set alarm time
 def set_alarm():
+    global alarm_stopped
     global alarm_time
+
+    alarm_stopped = False
     print(f"Alarm set for {hour_entry.get()}:{minute_entry.get()}")
     alarm_time = f"{hour_entry.get()}:{minute_entry.get()}"
 
-## button for submiting the time
+
+## stop alarm
+def stop_alarm():
+    global alarm_ringing
+    global alarm_stopped
+
+    if alarm_ringing == True:
+        stop_alarm_sound()
+        alarm_stopped = True
+        alarm_ringing =False
+
+
+
+## button for submiting the time and stopping the alarm
 set_alarm_button = tk.Button(window, text = "Set Alarm", width=9,height=2, command= set_alarm)
 set_alarm_button.grid(row = 5 , column = 5)
+stop_alarm_button = tk.Button(window, text = "Stop Alarm",width=9,height=2, command=stop_alarm )
+stop_alarm_button.grid(row = 6 , column = 5)
 
 
 # compare alarm time with now time
@@ -51,7 +79,21 @@ def comapare(current_time , alarm_time):
 
 
 # make a alarm sound
+def start_alarm_sound():
+    global alarm_ringing
+    pygame.mixer.init()
+    pygame.mixer.music.load("alarm1.wav")
+    pygame.mixer.music.play()
+
+
+def stop_alarm_sound():
+    pygame.mixer.music.stop()
 
 
 # main
-window.mainloop()
+def main():
+    window.mainloop()
+
+
+if __name__ == "__main__":
+    main()
